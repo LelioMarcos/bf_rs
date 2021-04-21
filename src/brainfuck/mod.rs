@@ -16,8 +16,8 @@ impl BrainFuck {
         }
     }
 
-    pub fn run(&mut self, program: String) {
-        let tokens = scan(program.as_str()).unwrap_or_else(|err| {
+    pub fn run(&mut self, program: &str) {
+        let tokens = scan(program).unwrap_or_else(|err| {
             panic!("{}", err);
         });
 

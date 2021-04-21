@@ -12,9 +12,9 @@ fn main() {
 
     if let Some(file) = args.next() {
         if file.ends_with(".bf") {
-            bf_rs::run_from_file(file);
+            bf_rs::exec_from_file(file);
         } else {
-            bf_rs::run(file);
+            bf_rs::exec(file);
         }
     } else {
         println!("{}", MESSAGE);
