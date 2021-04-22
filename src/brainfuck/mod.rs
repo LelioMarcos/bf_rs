@@ -16,6 +16,10 @@ impl BrainFuck {
         }
     }
 
+    pub fn clear_memory(&mut self) {
+        self.mem = [0; 30000];
+    }
+
     pub fn run(&mut self, program: &str) {
         let tokens = scan(program).unwrap_or_else(|err| {
             panic!("{}", err);

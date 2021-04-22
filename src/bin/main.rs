@@ -1,22 +1,15 @@
 use std::env::args;
+use std::error::Error;
 
-const MESSAGE: &str = r"bf_rs v0.2 by LelioMarcos (2021).
-
-Usage:
-    ./bf_rs <path_to_file>
-    ./bf_rs <code>";
-
-fn main() {
+fn main() -> Result<(), Box<dyn Error>> {
     let mut args = args();
     args.next();
 
     if let Some(file) = args.next() {
-        if file.ends_with(".bf") {
-            bf_rs::exec_from_file(file);
-        } else {
-            bf_rs::exec(file);
-        }
+        bf_rs::exec_from_file(file)?;
     } else {
-        println!("{}", MESSAGE);
+        bf_rs::prompt()?;
     }
+
+    Ok(())
 }
