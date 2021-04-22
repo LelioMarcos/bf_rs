@@ -1,5 +1,4 @@
-use std::env::args;
-use std::error::Error;
+use std::{env::args, error::Error};
 
 fn main() -> Result<(), Box<dyn Error>> {
     let mut args = args();

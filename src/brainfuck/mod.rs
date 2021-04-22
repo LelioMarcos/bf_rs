@@ -5,7 +5,7 @@ use std::{char, fmt, io, io::Read};
 
 pub struct BrainFuck {
     mem: [u8; 30000],
-    ptr: usize,
+    pub ptr: usize,
 }
 
 impl BrainFuck {
@@ -24,6 +24,8 @@ impl BrainFuck {
         let tokens = scan(program).unwrap_or_else(|err| {
             panic!("{}", err);
         });
+
+        let mut outputted = false;
 
         let mut loop_start_stack: Vec<usize> = Vec::new();
 
@@ -55,30 +57,34 @@ impl BrainFuck {
                     }
                 }
                 Token::LoopEnd => cur_index = loop_start_stack.pop().unwrap() - 1,
-                Token::Write => print!("{}", char::from_u32(self.mem[self.ptr] as u32).unwrap()),
+                Token::Write => {
+                    print!("{}", char::from_u32(self.mem[self.ptr] as u32).unwrap());
+                    outputted = true;
+                },
                 Token::Read => {
                     self.mem[self.ptr] = io::stdin()
-                        .bytes()
-                        .next()
-                        .and_then(|result| result.ok())
-                        .map(|byte| byte as u8)
-                        .unwrap()
+                    .bytes()
+                    .next()
+                    .and_then(|result| result.ok())
+                    .map(|byte| byte as u8)
+                    .unwrap()
                 }
                 Token::Debug => println!("{}", self.to_string()),
             }
-            self.ptr %= tokens.len();
+            
+            self.ptr %= 30000;
             cur_index += 1;
+        }
+        
+        if outputted {
+            println!();
         }
     }
 }
 
 impl fmt::Display for BrainFuck {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "DEBUG: {:?} \n mem[{}] = {}",
-            self.mem, self.ptr, self.mem[self.ptr]
-        )?;
+        write!(f, "mem[{}] = {}", self.ptr, self.mem[self.ptr])?;
         Ok(())
     }
 }

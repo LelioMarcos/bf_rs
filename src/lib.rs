@@ -1,4 +1,4 @@
-use rustyline::{error::ReadlineError, Editor, Result};
+use rustyline::{error::ReadlineError, Editor};
 use std::{fs, io};
 
 mod brainfuck;
@@ -13,11 +13,11 @@ pub fn exec_from_file(path: String) -> io::Result<()> {
     Ok(())
 }
 
-pub fn prompt() -> Result<()> {
+pub fn prompt() -> rustyline::Result<()> {
     let mut bf = BrainFuck::new();
     let mut rl = Editor::<()>::new();
 
-    if rl.load_history("history.txt").is_err() {}
+    rl.load_history("history.txt").ok();
 
     println!("bf_rs v0.2 by LelioMarcos (2021)");
 
@@ -30,7 +30,6 @@ pub fn prompt() -> Result<()> {
                     println!("Memory Cleard");
                 } else {
                     bf.run(&line);
-                    println!();
                 }
             }
             Err(ReadlineError::Interrupted) => {
