@@ -6,7 +6,6 @@ A Brainfuck interpreter written in Rust.
 ### Building
 ```
 cargo build --release
-cd target/release
 ```
 
 ### Running

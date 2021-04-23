@@ -9,8 +9,7 @@ pub enum Token {
     LoopStart,
     LoopEnd,
     Write,
-    Read,
-    Debug,
+    Read
 }
 
 pub fn scan(program: &str) -> io::Result<Vec<Token>> {
@@ -26,7 +25,6 @@ pub fn scan(program: &str) -> io::Result<Vec<Token>> {
             ']' => tokens.push(Token::LoopEnd),
             '.' => tokens.push(Token::Write),
             ',' => tokens.push(Token::Read),
-            '#' => tokens.push(Token::Debug),
             _ => (),
         }
     }

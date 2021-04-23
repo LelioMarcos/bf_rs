@@ -19,25 +19,22 @@ pub fn prompt() -> rustyline::Result<()> {
 
     rl.load_history("history.txt").ok();
 
-    println!("bf_rs v0.2 by LelioMarcos (2021)");
+    println!("bf_rs v0.2 by LelioMarcos (2021)\nType \"#\" to display the current memory position and the value in it, or \"clm\" to clear the memory.");
 
     loop {
         match rl.readline(">> ") {
             Ok(line) => {
                 rl.add_history_entry(&line);
-                if line == "ClearMem" {
+                if line == "clm" {
                     bf.clear_memory();
-                    println!("Memory Cleard");
+                    println!("Memory Cleared");
+                } else if line == "#" {
+                    println!("{}", bf.to_string());
                 } else {
                     bf.run(&line);
                 }
             }
-            Err(ReadlineError::Interrupted) => {
-                println!("Stop");
-                break;
-            }
             Err(ReadlineError::Eof) => {
-                println!("Exiting");
                 break;
             }
             Err(err) => {

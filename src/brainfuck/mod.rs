@@ -5,7 +5,7 @@ use std::{char, fmt, io, io::Read};
 
 pub struct BrainFuck {
     mem: [u8; 30000],
-    pub ptr: usize,
+    ptr: usize,
 }
 
 impl BrainFuck {
@@ -18,6 +18,18 @@ impl BrainFuck {
 
     pub fn clear_memory(&mut self) {
         self.mem = [0; 30000];
+    }
+
+    fn next_mem(&mut self) {
+        self.ptr += 1;
+        self.ptr %= self.mem.len();
+    }
+
+    fn prev_mem(&mut self) {
+        self.ptr = self.ptr.wrapping_sub(1);
+        if self.ptr == usize::MAX {
+            self.ptr = self.mem.len() - 1;
+        }
     }
 
     pub fn run(&mut self, program: &str) {
@@ -34,13 +46,13 @@ impl BrainFuck {
             match tokens[cur_index] {
                 Token::Plus => self.mem[self.ptr] = self.mem[self.ptr].wrapping_add(1),
                 Token::Minus => self.mem[self.ptr] = self.mem[self.ptr].wrapping_sub(1),
-                Token::NextMem => self.ptr = self.ptr.wrapping_add(1),
-                Token::PrevMem => self.ptr = self.ptr.wrapping_sub(1),
+                Token::NextMem => self.next_mem(),
+                Token::PrevMem => self.prev_mem(),
                 Token::LoopStart => {
                     if self.mem[self.ptr] == 0 {
                         let mut count = 1;
                         for (i, c) in tokens.iter().enumerate().skip(cur_index + 1) {
-                            match *c {
+                            match c {
                                 Token::LoopStart => count += 1,
                                 Token::LoopEnd => {
                                     count -= 1;
@@ -53,14 +65,14 @@ impl BrainFuck {
                             }
                         }
                     } else {
-                        loop_start_stack.push(cur_index);
+                        loop_start_stack.push(cur_index - 1);
                     }
                 }
-                Token::LoopEnd => cur_index = loop_start_stack.pop().unwrap() - 1,
+                Token::LoopEnd => cur_index = loop_start_stack.pop().unwrap(),
                 Token::Write => {
                     print!("{}", char::from_u32(self.mem[self.ptr] as u32).unwrap());
                     outputted = true;
-                },
+                }
                 Token::Read => {
                     self.mem[self.ptr] = io::stdin()
                     .bytes()
@@ -69,10 +81,8 @@ impl BrainFuck {
                     .map(|byte| byte as u8)
                     .unwrap()
                 }
-                Token::Debug => println!("{}", self.to_string()),
             }
-            
-            self.ptr %= 30000;
+
             cur_index += 1;
         }
         
