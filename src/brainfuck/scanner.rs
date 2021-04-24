@@ -1,6 +1,5 @@
 use std::io;
 
-#[derive(Debug)]
 pub enum Token {
     Plus,
     Minus,
@@ -16,17 +15,19 @@ pub fn scan(program: &str) -> io::Result<Vec<Token>> {
     let mut tokens: Vec<Token> = Vec::new();
 
     for c in program.chars() {
-        match c {
-            '+' => tokens.push(Token::Plus),
-            '-' => tokens.push(Token::Minus),
-            '>' => tokens.push(Token::NextMem),
-            '<' => tokens.push(Token::PrevMem),
-            '[' => tokens.push(Token::LoopStart),
-            ']' => tokens.push(Token::LoopEnd),
-            '.' => tokens.push(Token::Write),
-            ',' => tokens.push(Token::Read),
-            _ => (),
-        }
+        tokens.push(
+            match c {
+                '+' => Token::Plus,
+                '-' => Token::Minus,
+                '>' => Token::NextMem,
+                '<' => Token::PrevMem,
+                '[' => Token::LoopStart,
+                ']' => Token::LoopEnd,
+                '.' => Token::Write,
+                ',' => Token::Read,
+                _ => continue,
+            }
+        )
     }
 
     Ok(tokens)
