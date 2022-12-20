@@ -42,13 +42,14 @@ impl BrainFuck {
         let mut loop_start_stack: Vec<usize> = Vec::new();
 
         let mut cur_index = 0;
+        
         while cur_index < tokens.len() {
             match tokens[cur_index] {
                 Token::Plus => self.mem[self.ptr] = self.mem[self.ptr].wrapping_add(1),
                 Token::Minus => self.mem[self.ptr] = self.mem[self.ptr].wrapping_sub(1),
                 Token::NextMem => self.next_mem(),
                 Token::PrevMem => self.prev_mem(),
-                Token::LoopStart => {
+                Token::LoopStart => { // melhorar aqui
                     if self.mem[self.ptr] == 0 {
                         let mut count = 1;
                         for (i, c) in tokens.iter().enumerate().skip(cur_index + 1) {
@@ -65,7 +66,7 @@ impl BrainFuck {
                             }
                         }
                     } else {
-                        loop_start_stack.push(cur_index - 1);
+                        loop_start_stack.push(cur_index.wrapping_sub(1));
                     }
                 }
                 Token::LoopEnd => cur_index = loop_start_stack.pop().unwrap(),
@@ -75,15 +76,15 @@ impl BrainFuck {
                 }
                 Token::Read => {
                     self.mem[self.ptr] = io::stdin()
-                    .bytes()
-                    .next()
-                    .and_then(|result| result.ok())
-                    .map(|byte| byte as u8)
-                    .unwrap()
+                        .bytes()
+                        .next()
+                        .and_then(|result| result.ok())
+                        .map(|byte| byte as u8)
+                        .unwrap()
                 }
             }
 
-            cur_index += 1;
+            cur_index = cur_index.wrapping_add(1);
         }
         
         if outputted {
