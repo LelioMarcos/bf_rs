@@ -39,8 +39,6 @@ impl BrainFuck {
 
         let mut outputted = false;
 
-        let mut loop_start_stack: Vec<usize> = Vec::new();
-
         let mut cur_index = 0;
         
         while cur_index < tokens.len() {

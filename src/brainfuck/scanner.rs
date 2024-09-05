@@ -14,8 +14,9 @@ pub enum Token {
 pub fn scan(program: &str) -> io::Result<Vec<Token>> {
     let mut tokens: Vec<Token> = Vec::new();
     let mut loops: Vec<usize> = Vec::new();
+    let mut i = 0;
 
-    for (i, c) in program.chars().enumerate() {
+    for c in program.chars() {
         tokens.push(
             match c {
                 '+' => Token::Plus,
@@ -35,10 +36,12 @@ pub fn scan(program: &str) -> io::Result<Vec<Token>> {
         } else if c == ']' {
             let start = loops.pop().unwrap();
             let end = i;
-
+            
             tokens[start] = Token::LoopStart(end);
             tokens[end] = Token::LoopEnd(start);
         }
+
+        i += 1;
     }
 
     Ok(tokens)
