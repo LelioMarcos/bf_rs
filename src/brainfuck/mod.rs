@@ -49,27 +49,12 @@ impl BrainFuck {
                 Token::Minus => self.mem[self.ptr] = self.mem[self.ptr].wrapping_sub(1),
                 Token::NextMem => self.next_mem(),
                 Token::PrevMem => self.prev_mem(),
-                Token::LoopStart => { // melhorar aqui
+                Token::LoopStart(end) => {
                     if self.mem[self.ptr] == 0 {
-                        let mut count = 1;
-                        for (i, c) in tokens.iter().enumerate().skip(cur_index + 1) {
-                            match c {
-                                Token::LoopStart => count += 1,
-                                Token::LoopEnd => {
-                                    count -= 1;
-                                    if count == 0 {
-                                        cur_index = i;
-                                        break;
-                                    }
-                                }
-                                _ => (),
-                            }
-                        }
-                    } else {
-                        loop_start_stack.push(cur_index.wrapping_sub(1));
+                        cur_index = end;
                     }
                 }
-                Token::LoopEnd => cur_index = loop_start_stack.pop().unwrap(),
+                Token::LoopEnd(start) => cur_index = start.wrapping_sub(1),
                 Token::Write => {
                     print!("{}", char::from_u32(self.mem[self.ptr] as u32).unwrap());
                     outputted = true;

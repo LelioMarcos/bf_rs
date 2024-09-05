@@ -19,7 +19,7 @@ pub fn prompt() -> rustyline::Result<()> {
 
     rl.load_history("history.txt").ok();
 
-    println!("bf_rs v0.2 by LelioMarcos (2021)\nType \"#\" to display the current memory position and the value in it, or \"clm\" to clear the memory.");
+    println!("bf_rs by LelioMarcos\nType \"#\" to display the current memory position and the value in it, or \"clm\" to clear the memory.");
 
     loop {
         match rl.readline(">> ") {
