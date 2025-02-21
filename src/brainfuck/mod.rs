@@ -21,20 +21,20 @@ impl BrainFuck {
     }
 
     fn next_mem(&mut self) {
-        self.ptr += 1;
-        self.ptr %= self.mem.len();
+        self.ptr = (self.ptr + 1) % self.mem.len();
     }
 
     fn prev_mem(&mut self) {
-        self.ptr = self.ptr.wrapping_sub(1);
-        if self.ptr == usize::MAX {
+        if self.ptr == 0 {
             self.ptr = self.mem.len() - 1;
+        } else {
+            self.ptr = self.ptr.wrapping_sub(1);
         }
     }
 
     pub fn run(&mut self, program: &str) {
         let tokens = scan(program).unwrap_or_else(|err| {
-            panic!("{}", err);
+            panic!("Error: {}", err);
         });
 
         let mut outputted = false;

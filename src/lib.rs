@@ -38,8 +38,7 @@ pub fn prompt() -> rustyline::Result<()> {
                 break;
             }
             Err(err) => {
-                println!("Error: {:?}", err);
-                break;
+                panic!("Error: {:?}", err);
             }
         }
     }

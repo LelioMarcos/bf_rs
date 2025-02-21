@@ -13,12 +13,12 @@ pub enum Token {
 
 pub fn scan(program: &str) -> io::Result<Vec<Token>> {
     let mut tokens: Vec<Token> = Vec::new();
-    let mut loops: Vec<usize> = Vec::new();
-    let mut i = 0;
+    let mut loops: Vec<(usize, usize)> = Vec::new();
+    let mut i: usize = 0;
 
-    for c in program.chars() {
+    for (index_file, character) in program.chars().enumerate() {
         tokens.push(
-            match c {
+            match character {
                 '+' => Token::Plus,
                 '-' => Token::Minus,
                 '>' => Token::NextMem,
@@ -31,17 +31,27 @@ pub fn scan(program: &str) -> io::Result<Vec<Token>> {
             }
         );
         
-        if c == '[' {
-            loops.push(i);
-        } else if c == ']' {
-            let start = loops.pop().unwrap();
-            let end = i;
-            
-            tokens[start] = Token::LoopStart(end);
-            tokens[end] = Token::LoopEnd(start);
+        if character == '[' {
+            loops.push((i, index_file));
+        }
+        else if character == ']' {
+            let (start, _) = match loops.pop() {
+                Some(top) => top,
+                None => {
+                    return Err(io::Error::new(io::ErrorKind::InvalidInput, format!("at {index_file}, Unmatched ']'"))); 
+                }   
+            };
+
+            tokens[start] = Token::LoopStart(i);
+            tokens[i] = Token::LoopEnd(start);
         }
 
         i += 1;
+    }
+
+    if !loops.is_empty() {
+        let (_, i) = loops.pop().unwrap();
+        return Err(io::Error::new(io::ErrorKind::InvalidInput, format!("at {i}, Unmatched '['")));
     }
 
     Ok(tokens)
