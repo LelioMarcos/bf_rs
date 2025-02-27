@@ -25,11 +25,11 @@ impl BrainFuck {
     }
 
     fn prev_mem(&mut self) {
-        if self.ptr == 0 {
-            self.ptr = self.mem.len() - 1;
+        self.ptr = if self.ptr > 0 {
+            self.ptr - 1
         } else {
-            self.ptr = self.ptr.wrapping_sub(1);
-        }
+            self.mem.len() - 1
+        };
     }
 
     pub fn run(&mut self, program: &str) {
@@ -54,7 +54,7 @@ impl BrainFuck {
                 }
                 Token::LoopEnd(start) => cur_index = start.wrapping_sub(1),
                 Token::Write => {
-                    print!("{}", char::from_u32(self.mem[self.ptr] as u32).unwrap());
+                    print!("{}", self.mem[self.ptr] as char);
                     outputted = true;
                 }
                 Token::Read => {
